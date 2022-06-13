@@ -1,0 +1,14 @@
+# dependencies
+/node_modules
+
+# seeds and testing
+/seeds
+/conversations
+/conversations
+
+# misc
+.DS_Store
+.env
+
+.exe
+

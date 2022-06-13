@@ -1,0 +1,23 @@
+{
+  "name": "wordle-tracker",
+  "version": "1.0.0",
+  "description": "track wordle progress from slack api",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "local": "nodemon app.js"
+  },
+  "author": "Mithin",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/web-api": "^6.7.1",
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "firebase": "^9.8.1",
+    "pug": "^3.0.2"
+  }
+}
