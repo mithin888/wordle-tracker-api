@@ -3,6 +3,8 @@ import { db } from "../lib/database.js";
 import userDisplayName from "../users/user.js";
 
 const saveScore = async (req, res) => {
+  console.log(req.path);
+
   // conditional for correct message to be stored
   if (req.body.event) {
     if (req.body.event.text != undefined && req.body.event.text.includes("Wordle")) {
