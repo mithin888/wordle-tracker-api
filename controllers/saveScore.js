@@ -3,6 +3,7 @@ import { db } from "../lib/database.js";
 import userDisplayName from "../users/user.js";
 
 const saveScore = async (req, res) => {
+  console.log(req.hostname);
   console.log(req.originalUrl);
 
   // conditional for correct message to be stored
