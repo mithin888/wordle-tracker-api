@@ -2,19 +2,31 @@
 import 'dotenv/config';
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from "cors";
 
 // importing custom modules
 import saveScore from "./controllers/saveScore.js";
+import fetchUsers, { fetchUserIds } from "./controllers/fetchUsers.js";
+import ExpressError from "./utils/ExpressError.js";
 
 // initializing express and bodyParser
 const app = express();
 const jsonParser = bodyParser.json();
 
+app.use(cors());
 app.set('view engine', 'ejs');
 
 
 app.get("/", async (req, res) => {
-  res.render('index');
+  res.send('400: Page not Found');
+});
+
+app.get("/users", jsonParser, async (req, res) => {
+  console.log('request received');
+  const users = await fetchUsers(process.env.WORDLE_CHANNEL_ID);
+  res.status(200).send({
+    users: users
+  });
 });
 
 let isSleeping = true;
@@ -35,9 +47,9 @@ app.post("/slack/events", jsonParser, async (req, res) => {
 
 });
 
-app.all("*", (req, res, next) => {
-  res.sendStatus(404);
-});
+// app.all("*", (req, res, next) => {
+//   next(new ExpressError("Page Not Found", 404));
+// });
 
 // configuring server port
 const port = process.env.PORT || 3000;
