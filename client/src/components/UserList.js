@@ -1,48 +1,42 @@
 import React, { useEffect, useState } from "react";
 
-import data from "../coverage/wordle.json";
-
 import User from "./User.js";
 
 
 
 const UserList = () => {
 
-  const array = data.filter(element => element.timestamp);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const fetchMatchData = async () => {
-      const response = await fetch(`http://localhost:3000/users`);
+    const scoreData = async () => {
+      const response = await fetch(`http://localhost:3000/users/scores`);
       const userList = await response.json();
-      console.log(userList.users);
-      setUsers(userList.users);
+      setUsers(userList.users.sort((a, b) => {
+        return a.score - b.score;
+      }));
     };
-    fetchMatchData();
+    scoreData();
   }, []);
 
-  const findScore = (userStats) => {
-    console.log(userStats);
-    return userStats;
-  };
-
-
+  const showUsers = users.map(user => {
+    if (user.is_bot) {
+      return;
+    } else {
+      return (
+        <User
+          key={user.id}
+          id={user.id}
+          first_name={user.first_name}
+          last_name={user.last_name}
+          score={user.score}
+        />);
+    }
+  });
 
   return (
     <React.Fragment>
-      {users.map(user => {
-        if (user.is_bot) {
-          return;
-        } else {
-          return (
-            <User
-              key={user.id}
-              id={user.id}
-              name={user.real_name}
-              score={findScore}
-            />);
-        }
-      })}
+      {showUsers}
     </React.Fragment>
   );
 };

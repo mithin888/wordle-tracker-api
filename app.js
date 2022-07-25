@@ -7,6 +7,7 @@ import cors from "cors";
 // importing custom modules
 import saveScore from "./controllers/saveScore.js";
 import fetchUsers, { fetchUserIds } from "./controllers/fetchUsers.js";
+import createUserScores from './controllers/calcScore.js';
 import ExpressError from "./utils/ExpressError.js";
 
 // initializing express and bodyParser
@@ -21,11 +22,19 @@ app.get("/", async (req, res) => {
   res.send('400: Page not Found');
 });
 
+app.get("/users/scores", jsonParser, async (req, res) => {
+  console.log('request received');
+  const userScores = await createUserScores(process.env.WORDLE_CHANNEL_ID);
+  res.status(200).send({
+    users: userScores,
+  });
+});
+
 app.get("/users", jsonParser, async (req, res) => {
   console.log('request received');
   const users = await fetchUsers(process.env.WORDLE_CHANNEL_ID);
   res.status(200).send({
-    users: users
+    users: users,
   });
 });
 
