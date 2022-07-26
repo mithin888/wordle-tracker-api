@@ -6,7 +6,6 @@ import cors from "cors";
 
 // importing custom modules
 import saveScore from "./controllers/saveScore.js";
-import fetchUsers from "./controllers/fetchUsers.js";
 import createUserScores from './controllers/fetchScore.js';
 import fetchData from "./controllers/fetchData.js";
 import catchAsync from './utils/catchAsync.js';
