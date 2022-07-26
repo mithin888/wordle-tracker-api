@@ -6,37 +6,28 @@ import cors from "cors";
 
 // importing custom modules
 import saveScore from "./controllers/saveScore.js";
-import fetchUsers, { fetchUserIds } from "./controllers/fetchUsers.js";
-import createUserScores from './controllers/calcScore.js';
+import fetchUsers from "./controllers/fetchUsers.js";
+import createUserScores from './controllers/fetchScore.js';
+import fetchData from "./controllers/fetchData.js";
+import catchAsync from './utils/catchAsync.js';
 import ExpressError from "./utils/ExpressError.js";
+
 
 // initializing express and bodyParser
 const app = express();
 const jsonParser = bodyParser.json();
 
 app.use(cors());
-app.set('view engine', 'ejs');
 
-
-app.get("/", async (req, res) => {
-  res.send('400: Page not Found');
-});
-
-app.get("/users/scores", jsonParser, async (req, res) => {
+app.get("/leaderboard/:filter", jsonParser, catchAsync(async (req, res, next) => {
   console.log('request received');
-  const userScores = await createUserScores(process.env.WORDLE_CHANNEL_ID);
+  const { filter } = req.params;
+  const filteredData = await fetchData(filter);
+  const userScores = await createUserScores(filteredData);
   res.status(200).send({
     users: userScores,
   });
-});
-
-app.get("/users", jsonParser, async (req, res) => {
-  console.log('request received');
-  const users = await fetchUsers(process.env.WORDLE_CHANNEL_ID);
-  res.status(200).send({
-    users: users,
-  });
-});
+}));
 
 let isSleeping = true;
 app.post("/slack/events", jsonParser, async (req, res) => {
@@ -53,12 +44,19 @@ app.post("/slack/events", jsonParser, async (req, res) => {
     res.sendStatus(503);
     isSleeping = false;
   }
-
 });
 
-// app.all("*", (req, res, next) => {
-//   next(new ExpressError("Page Not Found", 404));
-// });
+// catch all for invalid routes
+app.all('*', (req, res, next) => {
+  next(new ExpressError('Resource Not Found', 404));
+});
+
+// responds with an error object for invalid requests
+app.use((error, req, res, next) => {
+  const { statusCode = 500 } = error;
+  if (!error.message) error.message = 'Oh No, Something went wrong!';
+  res.status(statusCode).send(error);
+});
 
 // configuring server port
 const port = process.env.PORT || 3000;
