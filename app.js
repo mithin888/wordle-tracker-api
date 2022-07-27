@@ -5,12 +5,13 @@ import bodyParser from 'body-parser';
 import cors from "cors";
 
 // importing custom modules
-import saveScore from "./controllers/saveScore.js";
+import saveScore from "./controllers/saveScoreMDB.js";
 import createUserScores from './controllers/fetchScore.js';
 import fetchData from "./controllers/fetchData.js";
 import catchAsync from './utils/catchAsync.js';
 import ExpressError from "./utils/ExpressError.js";
 
+import fs from 'fs';
 
 // initializing express and bodyParser
 const app = express();
@@ -58,7 +59,7 @@ app.use((error, req, res, next) => {
 });
 
 // configuring server port
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3080;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

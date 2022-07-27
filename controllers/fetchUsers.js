@@ -25,4 +25,22 @@ export const fetchUserInfo = async (userId) => {
   return members.user;
 };
 
+export const fetchDisplayName = async (userId) => {
+  try {
+    // Call the users.info method using the WebClient
+    const userInfo = await client.users.info({
+      user: userId
+    });
+
+    // Returns display name of the user
+    if (!userInfo.user.profile.display_name.length > 0) {
+      return userInfo.user.profile.real_name;
+    } else return userInfo.user.profile.display_name;
+
+  }
+  catch (error) {
+    console.error(error);
+  }
+};
+
 export default fetchUsers;
