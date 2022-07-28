@@ -13,7 +13,8 @@ const fetchData = async (filter) => {
     const date = new Date(dateString);
     const day = date.getDay();
     const diff = date.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-    return new Date(date.setDate(diff));
+    const monday = new Date(date.setDate(diff));
+    return new Date(`${monday.getMonth() + 1}/${monday.getDate()}/${monday.getFullYear()}`);
   };
 
   // start of week in Unix Timestamp
