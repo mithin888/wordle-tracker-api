@@ -6,12 +6,10 @@ import cors from "cors";
 
 // importing custom modules
 import saveScore from "./controllers/saveScoreMDB.js";
-import createUserScores from './controllers/fetchScore.js';
+import calcAvgScores, { calcRawScores } from './controllers/fetchScore.js';
 import fetchData from "./controllers/fetchData.js";
 import catchAsync from './utils/catchAsync.js';
 import ExpressError from "./utils/ExpressError.js";
-
-import fs from 'fs';
 
 // initializing express and bodyParser
 const app = express();
@@ -19,14 +17,18 @@ const jsonParser = bodyParser.json();
 
 app.use(cors());
 
+app.get("/user/:userId/:filter", jsonParser, catchAsync(async (req, res, next) => {
+  const { userId, filter } = req.params;
+  const filteredData = await fetchData(filter, userId);
+  const rawScores = await calcRawScores(filteredData);
+  res.status(200).send(rawScores);
+}));
+
 app.get("/leaderboard/:filter", jsonParser, catchAsync(async (req, res, next) => {
-  console.log('request received');
   const { filter } = req.params;
   const filteredData = await fetchData(filter);
-  const userScores = await createUserScores(filteredData);
-  res.status(200).send({
-    users: userScores,
-  });
+  const userScores = await calcAvgScores(filteredData);
+  res.status(200).send(userScores);
 }));
 
 let isSleeping = true;
