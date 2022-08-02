@@ -49,11 +49,14 @@ export const calcRawScores = async (data) => {
     const fullDate = new Date(entry.timestamp * 1000);
     const date = fullDate.getDate();
     const month = fullDate.getMonth() + 1;
+    const year = fullDate.getFullYear();
     const indexOf = entry.text.indexOf('/');
     const score = entry.text.substring(indexOf - 1, indexOf);
     return ({
       ...entry,
-      score: score,
+      value: score === 'X' ? 7 : score,
+      day: `${year}-${month.length > 1 ? month : '0' + month}-${date}`,
+      score: score === 'X' ? 7 : score,
       date: `${month}/${date}`,
       full_date: fullDate,
     });

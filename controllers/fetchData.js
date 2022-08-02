@@ -4,9 +4,17 @@ import ExpressError from "../utils/ExpressError.js";
 const fetchData = async (filter, userId = '') => {
 
   let qParam;
+  const integer = +filter;
+  // <------------ Last n Days  ------------>
+  if (Number.isInteger(+filter)) {
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() - integer);
+    const unixStart = Math.floor(date.getTime() / 1000.0).toString();
+    qParam = unixStart;
+  }
 
   // <------------ Weekly ------------>
-  if (filter === 'weekly') {
+  else if (filter === 'weekly') {
     // returns start of week for given a date string MM/DD/YYYY. Default date is now
     const getMonday = (dateString = Date.now()) => {
       const date = new Date(dateString);
@@ -34,6 +42,10 @@ const fetchData = async (filter, userId = '') => {
     qParam = '1649823583.508359';
   }
 
+  // <------------ Timestamp specific ------------>
+  else if (filter > '1649823583.508359') {
+    qParam = filter;
+  }
   else {
     throw new ExpressError(`${filter} is not a valid parameter for /leaderboard`, 400);
   }
