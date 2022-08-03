@@ -47,6 +47,8 @@ app.get("/leaderboard/:filter", jsonParser, requestAuth, catchAsync(async (req, 
 
 let isSleeping = true;
 app.post("/slack/events", jsonParser, async (req, res) => {
+  const raw = req.body();
+  console.log(raw);
   console.log(req.rawBody);
   if (req.body.challenge) {
     const challenge = req.body.challenge;
