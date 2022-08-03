@@ -3,8 +3,6 @@ import { fetchDisplayName } from "./fetchUsers.js";
 import client from "../lib/mongoDB.js";
 
 const saveScore = async (req, res) => {
-
-  console.log(req.headers);
   // conditional for correct message to be stored
   if (req.body.event) {
     if (req.body.event.text != undefined && req.body.event.text.includes("Wordle")) {

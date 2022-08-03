@@ -1,4 +1,4 @@
-import ExpressError from "./ExpressError.js";
+import ExpressError from "../utils/ExpressError.js";
 
 const requestAuth = (req, res, next) => {
   if (process.env.NODE_ENV === "production") {

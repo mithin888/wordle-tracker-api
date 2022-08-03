@@ -9,31 +9,37 @@ import saveScore from "./controllers/saveScoreMDB.js";
 import calcAvgScores, { calcRawScores } from './controllers/fetchScore.js';
 import fetchData from "./controllers/fetchData.js";
 
+// importing middleware
+import slackAuth from './middleware/slackAuth.js';
+import requestAuth from './middleware/requestAuth.js';
+
 // importing utility functions
-import requestAuth from './utils/requestAuth.js';
 import catchAsync from './utils/catchAsync.js';
 import ExpressError from "./utils/ExpressError.js";
 
 // initializing express and bodyParser
 const app = express();
 
-app.use(bodyParser.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
+// initializing bodyParser for raw body
+const rawBodySaver = function (req, res, buf, encoding) {
+  if (buf && buf.length) {
+    req.rawBody = buf.toString(encoding || 'utf8');
   }
-}));
-
+};
+const jsonParser = bodyParser.json({
+  verify: rawBodySaver
+});
 app.use(cors());
 
 
-app.get("/user/:userId/:filter", requestAuth, catchAsync(async (req, res, next) => {
+app.get("/user/:userId/:filter", jsonParser, requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
   const filteredData = await fetchData(filter, userId);
   const rawScores = await calcRawScores(filteredData);
   res.status(200).send(rawScores);
 }));
 
-app.get("/leaderboard/:filter", requestAuth, catchAsync(async (req, res, next) => {
+app.get("/leaderboard/:filter", jsonParser, requestAuth, catchAsync(async (req, res, next) => {
   const { filter } = req.params;
   const filteredData = await fetchData(filter);
   const userScores = await calcAvgScores(filteredData);
@@ -41,8 +47,9 @@ app.get("/leaderboard/:filter", requestAuth, catchAsync(async (req, res, next) =
 }));
 
 let isSleeping = true;
-app.post("/slack/events", async (req, res) => {
-  console.log(req.rawBody);
+app.post("/slack/events", jsonParser, async (req, res) => {
+  const raw = req.rawBody;
+  console.log(raw);
   if (req.body.challenge) {
     const challenge = req.body.challenge;
     res.status(200).json({
