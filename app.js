@@ -17,28 +17,25 @@ import ExpressError from "./utils/ExpressError.js";
 // initializing express and bodyParser
 const app = express();
 
-const rawBodySaver = (req, res, buf, encoding) => {
-  if (buf && buf.length) {
-    req.rawBody = buf.toString(encoding || 'utf8');
+app.use(bodyParser.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
   }
-};
-const options = {
-  verify: rawBodySaver
-};
+}));
 
 const jsonParser = bodyParser.json(options);
 
 app.use(cors());
 
 
-app.get("/user/:userId/:filter", jsonParser, requestAuth, catchAsync(async (req, res, next) => {
+app.get("/user/:userId/:filter", requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
   const filteredData = await fetchData(filter, userId);
   const rawScores = await calcRawScores(filteredData);
   res.status(200).send(rawScores);
 }));
 
-app.get("/leaderboard/:filter", jsonParser, requestAuth, catchAsync(async (req, res, next) => {
+app.get("/leaderboard/:filter", requestAuth, catchAsync(async (req, res, next) => {
   const { filter } = req.params;
   const filteredData = await fetchData(filter);
   const userScores = await calcAvgScores(filteredData);
@@ -46,9 +43,7 @@ app.get("/leaderboard/:filter", jsonParser, requestAuth, catchAsync(async (req, 
 }));
 
 let isSleeping = true;
-app.post("/slack/events", jsonParser, async (req, res) => {
-  const raw = req.body();
-  console.log(raw);
+app.post("/slack/events", async (req, res) => {
   console.log(req.rawBody);
   if (req.body.challenge) {
     const challenge = req.body.challenge;
