@@ -16,9 +16,20 @@ import ExpressError from "./utils/ExpressError.js";
 
 // initializing express and bodyParser
 const app = express();
-const jsonParser = bodyParser.json();
+
+const rawBodySaver = (req, res, buf, encoding) => {
+  if (buf && buf.length) {
+    req.rawBody = buf.toString(encoding || 'utf8');
+  }
+};
+const options = {
+  verify: rawBodySaver
+};
+
+const jsonParser = bodyParser.json(options);
 
 app.use(cors());
+
 
 app.get("/user/:userId/:filter", jsonParser, requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
@@ -34,13 +45,9 @@ app.get("/leaderboard/:filter", jsonParser, requestAuth, catchAsync(async (req, 
   res.status(200).send(userScores);
 }));
 
-
-const rawReqBody = (req, res, next) => {
-  console.log(req.body);
-};
-
 let isSleeping = true;
-app.post("/slack/events", rawReqBody, jsonParser, async (req, res) => {
+app.post("/slack/events", jsonParser, async (req, res) => {
+  console.log(req.rawBody);
   if (req.body.challenge) {
     const challenge = req.body.challenge;
     res.status(200).json({
