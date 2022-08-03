@@ -8,6 +8,9 @@ import cors from "cors";
 import saveScore from "./controllers/saveScoreMDB.js";
 import calcAvgScores, { calcRawScores } from './controllers/fetchScore.js';
 import fetchData from "./controllers/fetchData.js";
+
+// importing utility functions
+import requestAuth from './utils/requestAuth.js';
 import catchAsync from './utils/catchAsync.js';
 import ExpressError from "./utils/ExpressError.js";
 
@@ -17,14 +20,14 @@ const jsonParser = bodyParser.json();
 
 app.use(cors());
 
-app.get("/user/:userId/:filter", jsonParser, catchAsync(async (req, res, next) => {
+app.get("/user/:userId/:filter", jsonParser, requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
   const filteredData = await fetchData(filter, userId);
   const rawScores = await calcRawScores(filteredData);
   res.status(200).send(rawScores);
 }));
 
-app.get("/leaderboard/:filter", jsonParser, catchAsync(async (req, res, next) => {
+app.get("/leaderboard/:filter", jsonParser, requestAuth, catchAsync(async (req, res, next) => {
   const { filter } = req.params;
   const filteredData = await fetchData(filter);
   const userScores = await calcAvgScores(filteredData);
