@@ -34,8 +34,13 @@ app.get("/leaderboard/:filter", jsonParser, requestAuth, catchAsync(async (req, 
   res.status(200).send(userScores);
 }));
 
+
+const rawReqBody = (req, res, next) => {
+  console.log(req.body);
+};
+
 let isSleeping = true;
-app.post("/slack/events", jsonParser, async (req, res) => {
+app.post("/slack/events", rawReqBody, jsonParser, async (req, res) => {
   if (req.body.challenge) {
     const challenge = req.body.challenge;
     res.status(200).json({
