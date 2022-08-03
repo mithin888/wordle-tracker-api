@@ -23,8 +23,6 @@ app.use(bodyParser.json({
   }
 }));
 
-const jsonParser = bodyParser.json(options);
-
 app.use(cors());
 
 
