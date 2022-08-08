@@ -4,6 +4,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from "cors";
 
+// mongoDB connection
+import client from './lib/mongoDB.js';
+
 // importing custom modules
 import saveScore from "./controllers/saveScoreMDB.js";
 import calcAvgScores, { calcRawScores } from './controllers/fetchScore.js';
