@@ -25,6 +25,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+await client.connect();
+console.log('Successfully connected to MongoDB Database!');
+
 app.get("/user/:userId/:filter", requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
   const filteredData = await fetchData(filter, userId);
@@ -73,3 +76,4 @@ const port = process.env.PORT || 3080;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
