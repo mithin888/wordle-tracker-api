@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "netlify-lambda build express",
+    "build": "netlify-lambda build src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node local.js",
     "local": "nodemon local.js"
@@ -22,6 +22,7 @@
     "express": "^4.18.1",
     "firebase": "^9.8.1",
     "mongodb": "^4.8.1",
+    "netlify-lambda": "^2.0.15",
     "serverless-http": "^3.1.0"
   }
 }
