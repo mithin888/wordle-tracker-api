@@ -4,6 +4,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from "cors";
 
+// mongoDB connection
+import client from './lib/mongoDB.js';
+
 // importing custom modules
 import saveScore from "./controllers/saveScoreMDB.js";
 import calcAvgScores, { calcRawScores } from './controllers/fetchScore.js';
@@ -21,6 +24,9 @@ import ExpressError from "./utils/ExpressError.js";
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+await client.connect();
+console.log('Successfully connected to MongoDB Database!');
 
 app.get("/user/:userId/:filter", requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
@@ -69,3 +75,7 @@ if (process.env.NODE_ENV !== "production") {
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6727667d849b8d8e2815b0da3fa544ac1bc4e965
