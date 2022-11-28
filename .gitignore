@@ -6,6 +6,7 @@
 /conversations
 
 # dist
+/dist
 /functions
 
 # environment variables

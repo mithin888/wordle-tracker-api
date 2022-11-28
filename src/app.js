@@ -27,7 +27,8 @@ const app = express();
 const router = express.Router();
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/.netlify/functions/server', router)
+// url provided by netlify functions
+app.use('/.netlify/functions/app', router)
 
 client.connect();
 console.log('Successfully connected to MongoDB Database!');
