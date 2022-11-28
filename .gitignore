@@ -5,6 +5,9 @@
 /seeds
 /conversations
 
+# dist
+/functions
+
 # environment variables
 .env
 .env.local

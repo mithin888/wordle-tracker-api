@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/.netlify/functions/server', router)
 
-await client.connect();
+client.connect();
 console.log('Successfully connected to MongoDB Database!');
 
 router.get("/user/:userId/:filter", requestAuth, catchAsync(async (req, res, next) => {
@@ -72,8 +72,5 @@ router.use((error, req, res, next) => {
 });
 
 
-
-
-export default app
-// module.exports = app;
-// module.exports.handler = serverless(app);
+export default app;
+export const handler = serverless(app);
