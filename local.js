@@ -1,4 +1,4 @@
-import app from "./express/app.js"
+import app from "./src/app.js"
 
 // configuring server port
 let port;
