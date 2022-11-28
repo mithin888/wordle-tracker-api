@@ -42,20 +42,16 @@ app.get("/leaderboard/:filter", requestAuth, catchAsync(async (req, res, next) =
   res.status(200).send(userScores);
 }));
 
-let isSleeping = true;
 app.post("/slack/events", slackAuth, catchAsync(async (req, res) => {
   if (req.body.challenge) {
     const challenge = req.body.challenge;
     res.status(200).json({
       challenge: challenge
     });
-  } else if (!isSleeping) {
+  } else {
     res.sendStatus(200);
     // saving incoming Wordle Score from wordle channel
     saveScore(req, res);
-  } else if (isSleeping) {
-    res.sendStatus(503);
-    isSleeping = false;
   }
 }));
 
@@ -72,8 +68,10 @@ app.use((error, req, res, next) => {
 });
 
 // configuring server port
-const port = process.env.PORT || 3080;
+let port;
+if (process.env.NODE_ENV !== "production") {
+  port = 3080;
+} else port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-
