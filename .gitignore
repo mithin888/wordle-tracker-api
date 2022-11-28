@@ -16,3 +16,6 @@
 
 # executables
 .exe
+
+# Local Netlify folder
+.netlify
