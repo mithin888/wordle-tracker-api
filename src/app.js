@@ -30,9 +30,6 @@ app.use(cors());
 // url provided by netlify functions
 app.use('/.netlify/functions/app', router)
 
-client.connect();
-console.log('Successfully connected to MongoDB Database!');
-
 router.get("/user/:userId/:filter", requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
   const filteredData = await fetchData(filter, userId);
