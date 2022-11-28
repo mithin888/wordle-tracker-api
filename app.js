@@ -66,7 +66,10 @@ app.use((error, req, res, next) => {
 });
 
 // configuring server port
-const port = process.env.PORT || 3080;
+let port;
+if (process.env.NODE_ENV !== "production") {
+  port = 3080;
+} else port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
