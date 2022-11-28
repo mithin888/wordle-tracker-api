@@ -75,7 +75,3 @@ if (process.env.NODE_ENV !== "production") {
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-<<<<<<< HEAD
-=======
-
->>>>>>> 6727667d849b8d8e2815b0da3fa544ac1bc4e965
