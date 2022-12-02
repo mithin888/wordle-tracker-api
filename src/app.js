@@ -5,9 +5,6 @@ import bodyParser from 'body-parser';
 import cors from "cors";
 import serverless from 'serverless-http'
 
-// mongoDB connection
-import client from './lib/mongoDB.js';
-
 // importing custom modules
 import saveScore from "./controllers/saveScoreMDB.js";
 import calcAvgScores, { calcRawScores } from './controllers/fetchScore.js';
@@ -27,10 +24,8 @@ const app = express();
 const router = express.Router();
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/.netlify/functions/server', router)
-
-await client.connect();
-console.log('Successfully connected to MongoDB Database!');
+// url provided by netlify functions
+app.use('/.netlify/functions/app', router)
 
 router.get("/user/:userId/:filter", requestAuth, catchAsync(async (req, res, next) => {
   const { userId, filter } = req.params;
@@ -53,9 +48,9 @@ router.post("/slack/events", slackAuth, catchAsync(async (req, res) => {
       challenge: challenge
     });
   } else {
-    res.sendStatus(200);
     // saving incoming Wordle Score from wordle channel
-    saveScore(req, res);
+    const feedback = await saveScore(req, res);
+    res.send(feedback);
   }
 }));
 
@@ -72,8 +67,5 @@ router.use((error, req, res, next) => {
 });
 
 
-
-
-export default app
-// module.exports = app;
-// module.exports.handler = serverless(app);
+export default app;
+export const handler = serverless(app);

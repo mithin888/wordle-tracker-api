@@ -53,6 +53,7 @@ const fetchData = async (filter, userId = '') => {
   // <--------- MongoDB Fetch --------->
   const mongoFetch = async () => {
     try {
+      await client.connect();
       const database = client.db("wordle-tracker");
       const all = database.collection("all");
 
