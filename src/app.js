@@ -5,9 +5,6 @@ import bodyParser from 'body-parser';
 import cors from "cors";
 import serverless from 'serverless-http'
 
-// mongoDB connection
-import client from './lib/mongoDB.js';
-
 // importing custom modules
 import saveScore from "./controllers/saveScoreMDB.js";
 import calcAvgScores, { calcRawScores } from './controllers/fetchScore.js';
@@ -51,9 +48,9 @@ router.post("/slack/events", slackAuth, catchAsync(async (req, res) => {
       challenge: challenge
     });
   } else {
-    res.sendStatus(200);
     // saving incoming Wordle Score from wordle channel
-    saveScore(req, res);
+    const feedback = await saveScore(req, res);
+    res.send(feedback);
   }
 }));
 
